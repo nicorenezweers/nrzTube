@@ -10,4 +10,4 @@ ohne Container-Registry und ohne Login installiert werden kann. Der Quellcode li
 | `deno-<arch>.gz` | Deno 2.9.8 (MIT), JavaScript für yt-dlp |
 | `SHA256SUMS` | Prüfsummen |
 
-Stand: nrzTube 1.11.1, gebaut aus `80316fe` mit `scripts/umbrel-release.sh 1.11.1`.
+Stand: nrzTube 1.0.1, gebaut aus `2e0eae0` mit `build/umbrel-release.sh 1.0.1`.
