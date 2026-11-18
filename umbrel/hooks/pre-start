@@ -5,7 +5,7 @@ APP_DIR="${APP_DATA_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)}"
 
 # nrzTube kommt ohne eigenes Image und ohne Registry-Login: Server (mit Oberflaeche), yt-dlp und
 # Deno liegen im nrzTube-Repo auf nrzGit auf diesem Geraet (Zweig `umbrel`, Tag unten, gebaut mit
-# scripts/umbrel-release.sh). Beim ersten Start und nach Updates werden sie fuer die Architektur
+# build/umbrel-release.sh). Beim ersten Start und nach Updates werden sie fuer die Architektur
 # dieses Geraets nach app/ geladen und geprueft; der Container (gepinntes debian:trixie-slim)
 # startet sie von dort.
 RELEASE="umbrel-1.0.1"

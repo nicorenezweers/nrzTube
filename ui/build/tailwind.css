@@ -3,7 +3,7 @@
    die Farbe bringen die Vorschaubilder. */
 @import "tailwindcss";
 
-@source "./src/**/*.rs";
+@source "../src/**/*.rs";
 
 @custom-variant dark (&:is(.dark *));
 

@@ -116,7 +116,7 @@ Browser ──▶ nrzTube (axum) ──▶ YouTube InnerTube · yt-dlp · Twitch
 ## Quick start
 
 ```sh
-docker build -t nrztube .
+docker build -f build/Dockerfile -t nrztube .
 docker run -p 8455:8455 -v nrztube-data:/data nrztube
 ```
 
@@ -137,7 +137,7 @@ Subscribe via search or import your subscriptions under **Abos & Profile** (Subs
 ## Development
 
 ```sh
-scripts/ui.sh                 # build the UI into ui/dist/public (needs dx 0.7 and wasm32)
+build/ui.sh                   # build the UI into ui/dist/public (needs dx 0.7 and wasm32)
 cargo run --release           # server on http://localhost:8455
 ```
 
@@ -145,13 +145,14 @@ cargo run --release           # server on http://localhost:8455
 src/        server: routes, InnerTube (yt/), Twitch, live chat, watch party, recap, recommendations
 ui/         UI (Dioxus): pages, player, components
 types/      types shared by server and UI
+build/      Dockerfile, UI and release scripts
 umbrel/     umbrelOS package
 ```
 
 ## umbrelOS / nrzStore
 
 App ID `nrz-tube`, port `8455`. Package files live in `umbrel/`, managed through `nrzStore.json`.
-New version: `scripts/umbrel-release.sh <version>` builds the binary, yt-dlp and Deno for amd64/arm64,
+New version: `build/umbrel-release.sh <version>` builds the binary, yt-dlp and Deno for amd64/arm64,
 puts them on the `umbrel` branch and pushes the tag `umbrel-<version>` – nrzGit then updates the
 store by itself.
 

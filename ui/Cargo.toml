@@ -23,7 +23,7 @@ web-sys = { version = "0.3", features = [
   "Document", "Element", "Event", "EventTarget", "HtmlElement", "HtmlInputElement", "HtmlMediaElement",
   "HtmlVideoElement", "KeyboardEvent", "Location", "MouseEvent", "Navigator", "Clipboard", "Storage",
   "TextTrack", "TextTrackList", "TextTrackMode", "TimeRanges", "Window", "File", "FileList", "Blob",
-  "DomRect", "History", "Url", "MediaError",
+  "DomRect", "History", "Url", "MediaError", "Node", "HtmlHeadElement",
 ] }
 urlencoding = "2"
 

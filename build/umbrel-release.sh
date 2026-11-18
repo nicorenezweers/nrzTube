@@ -1,6 +1,6 @@
 #!/bin/sh
 # Umbrel-Paket ohne Registry und ohne Login (wie nrzMusic):
-#   scripts/umbrel-release.sh 1.0.0
+#   build/umbrel-release.sh 1.0.0
 # baut das Programm für linux/amd64 und linux/arm64 (Stufe `dist` des Dockerfiles, mit
 # eingebetteter Oberfläche), holt yt-dlp und Deno (Versionen und Prüfsummen aus dem Dockerfile)
 # und legt alles als Commit auf den Zweig `umbrel` mit dem Tag `umbrel-<version>`:
@@ -21,7 +21,7 @@ tag="umbrel-$version"
 out="dist/umbrel/$version"
 builder="${BUILDER:-nrztube-builder}"
 
-arg() { sed -n "s/^ARG $1=//p" Dockerfile | head -1; }
+arg() { sed -n "s/^ARG $1=//p" build/Dockerfile | head -1; }
 ytdlp_version="$(arg YTDLP_VERSION)"
 deno_version="$(arg DENO_VERSION)"
 
@@ -37,7 +37,7 @@ echo "==> Programm (linux/amd64, linux/arm64)"
 if ! docker buildx inspect "$builder" >/dev/null 2>&1; then
   docker buildx create --name "$builder" --driver docker-container >/dev/null
 fi
-docker buildx build --builder "$builder" --platform linux/amd64,linux/arm64 --target dist \
+docker buildx build --builder "$builder" --file build/Dockerfile --platform linux/amd64,linux/arm64 --target dist \
   --output "type=local,dest=$out/bin" .
 
 echo "==> yt-dlp $ytdlp_version, Deno $deno_version"
@@ -85,7 +85,7 @@ ohne Container-Registry und ohne Login installiert werden kann. Der Quellcode li
 | \`deno-<arch>.gz\` | Deno $deno_version (MIT), JavaScript für yt-dlp |
 | \`SHA256SUMS\` | Prüfsummen |
 
-Stand: nrzTube $version, gebaut aus \`$(git rev-parse --short HEAD)\` mit \`scripts/umbrel-release.sh $version\`.
+Stand: nrzTube $version, gebaut aus \`$(git rev-parse --short HEAD)\` mit \`build/umbrel-release.sh $version\`.
 EOF
 git -C "$worktree" add -A
 git -C "$worktree" -c user.name="$(git config user.name || echo nrz)" -c user.email="$(git config user.email || echo nrz@localhost)" \
