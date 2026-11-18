@@ -1950,14 +1950,14 @@ dependencies = [
 
 [[package]]
 name = "nrztube-types"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "serde",
 ]
 
 [[package]]
 name = "nrztube-ui"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "dioxus",
  "gloo-net",

@@ -2,7 +2,7 @@ manifestVersion: 1
 id: nrz-tube
 category: media
 name: nrzTube
-version: "1.0.0"
+version: "1.0.1"
 tagline: YouTube und Twitch ohne Werbung und ohne Tracking – mit Abos, Profilen, SponsorBlock und Live-Chat
 icon: http://100.78.107.162:8390/nicorenezweers/nrzStore/raw/branch/main/nrz-tube/icon.png
 port: 8455
@@ -58,7 +58,7 @@ description: >-
   Suche abonnieren oder unter Abos & Profile importieren. Braucht die App
   nrzGit (laedt das Programm von dort).
 releaseNotes: >-
-  Daumen hoch/runter wird nach dem Bewerten ausgefuellt angezeigt (auch nach Neuladen und im Menue auf Karten). Home-Symbol in der mobilen Leiste markiert die aktive Seite wieder richtig.
+  Better README with screenshots and the full feature list. Codebase is now 100% Rust.
 developer: nrz
 website: http://100.78.107.162:8390/nicorenezweers/nrzTube
 submitter: nrz
@@ -69,4 +69,6 @@ dependencies:
   - nrz-git
 defaultUsername: ""
 defaultPassword: ""
-gallery: []
+gallery:
+  - http://100.78.107.162:8390/nicorenezweers/nrzTube/raw/branch/main/docs/screenshots/home.jpg
+  - http://100.78.107.162:8390/nicorenezweers/nrzTube/raw/branch/main/docs/screenshots/twitch.jpg

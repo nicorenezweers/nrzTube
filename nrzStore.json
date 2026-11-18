@@ -3,5 +3,5 @@
   "app": "nrz-tube",
   "tagPrefix": "umbrel-",
   "package": "umbrel",
-  "releaseNotes": "Daumen hoch/runter wird nach dem Bewerten ausgefuellt angezeigt (auch nach Neuladen und im Menue auf Karten). Home-Symbol in der mobilen Leiste markiert die aktive Seite wieder richtig."
+  "releaseNotes": "Better README with screenshots and the full feature list. Codebase is now 100% Rust."
 }
