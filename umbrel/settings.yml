@@ -1,0 +1,4 @@
+dependencies: {}
+autoStart: true
+# Eigene Anmeldung in der App (Konten, erstes Konto ist Admin).
+appProxyAuthEnabled: false

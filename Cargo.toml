@@ -1,0 +1,46 @@
+[package]
+name = "nrztube"
+version = "1.0.0"
+edition = "2021"
+description = "nrzTube – privates YouTube-Frontend in Rust (axum, SQLite, Dioxus/nrzUI), ohne Werbung und ohne Google-Tracking"
+license = "AGPL-3.0-or-later"
+rust-version = "1.85"
+
+[workspace]
+members = ["types"]
+# Die Oberfläche (Dioxus/WebAssembly) ist ein eigenes Projekt mit eigenem Profil.
+exclude = ["ui"]
+
+[dependencies]
+nrztube-types = { path = "types" }
+axum = { version = "0.8", features = ["macros"] }
+tower-http = { version = "0.6", features = ["compression-gzip", "compression-br"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "sync", "time", "process", "net", "signal"] }
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "stream", "gzip", "brotli"] }
+rusqlite = { version = "0.37", features = ["bundled"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+futures = "0.3"
+bytes = "1"
+base64 = "0.22"
+sha2 = "0.10"
+hmac = "0.12"
+hex = "0.4"
+rand = "0.8"
+argon2 = "0.5"
+urlencoding = "2"
+rust-embed = { version = "8", features = ["mime-guess"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+anyhow = "1"
+tokio-rustls = { version = "0.26", default-features = false, features = ["ring", "tls12"] }
+webpki-roots = "1"
+sha1 = "0.10"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+
+[profile.release]
+opt-level = 3
+lto = "thin"
+codegen-units = 4
+strip = true
+panic = "abort"

@@ -1,0 +1,56 @@
+version: "3.8"
+
+services:
+  # Injected by umbrelOS: publishes the web UI in the app proxy. nrzTube hat eigene Konten –
+  # die umbrelOS-Anmeldung ist aus (settings.yml).
+  app_proxy:
+    environment:
+      APP_HOST: nrz-tube_app_1
+      APP_PORT: 8455
+    container_name: nrz-tube_app_proxy_1
+
+  app:
+    # Gepinntes Debian (Multi-Arch-Manifest). nrzTube ist kein eigenes Image: hooks/pre-start
+    # laedt Server (mit Oberflaeche), yt-dlp und Deno fuer die Architektur dieses Geraets aus dem
+    # nrzTube-Repo (Zweig umbrel) nach ${APP_DATA_DIR}/app – ohne Registry-Login.
+    image: debian:trixie-slim@sha256:f6b08b09a05725f9431502d3b5714f5c4576e82c1a84fa1debe0c24a7e0c3ec4
+    container_name: nrz-tube_app_1
+    restart: unless-stopped
+    init: true
+    user: "1000:1000"
+    working_dir: /data
+    command: ["/app/nrztube"]
+    stop_grace_period: 15s
+    environment:
+      - TZ=Europe/Zurich
+      - NRZTUBE_DATA_DIR=/data
+      - NRZTUBE_ADDRESS=0.0.0.0
+      - NRZTUBE_PORT=8455
+      # yt-dlp (Video-Streams von YouTube) und Deno liegen in /app; yt-dlp kopiert sich nach
+      # /data/tools und aktualisiert sich dort selbst
+      - NRZTUBE_YTDLP=/app/yt-dlp
+      - PATH=/app:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      - DENO_DIR=/tmp/deno
+      - DENO_NO_UPDATE_CHECK=1
+      - NRZTUBE_LOG=info
+      # Erzwingt pro Release einen frischen Container.
+      - APP_VERSION=${APP_VERSION}
+    volumes:
+      - ${APP_DATA_DIR}/app:/app:ro
+      # Konten, Datenbank (Abos, Profile, Playlists, Verlauf, Einstellungen), yt-dlp.
+      - ${APP_DATA_DIR}/data:/data
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "/app/nrztube", "healthcheck"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "3"

@@ -1,0 +1,28 @@
+[application]
+name = "nrztube-ui"
+default_platform = "web"
+asset_dir = "assets"
+
+[web.app]
+title = "nrzTube"
+
+[web.resource]
+style = []
+script = []
+
+[web.resource.dev]
+style = []
+script = []
+
+# Beim Entwickeln (dx serve) gehen API, Bilder und Medien an den laufenden Server.
+[[web.proxy]]
+backend = "http://localhost:8455/api/"
+
+[[web.proxy]]
+backend = "http://localhost:8455/img/"
+
+[[web.proxy]]
+backend = "http://localhost:8455/vi/"
+
+[[web.proxy]]
+backend = "http://localhost:8455/p/"

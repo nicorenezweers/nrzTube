@@ -1,0 +1,72 @@
+manifestVersion: 1
+id: nrz-tube
+category: media
+name: nrzTube
+version: "1.0.0"
+tagline: YouTube und Twitch ohne Werbung und ohne Tracking – mit Abos, Profilen, SponsorBlock und Live-Chat
+icon: http://100.78.107.162:8390/nicorenezweers/nrzStore/raw/branch/main/nrz-tube/icon.png
+port: 8455
+path: ""
+description: >-
+  nrzTube ist ein privates YouTube-Frontend in Rust nach dem Vorbild von
+  Invidious und FreeTube. Der Server holt Videos, Kanaele, Kommentare und
+  Bilder selbst von YouTube (InnerTube und yt-dlp) – dein Browser spricht nie
+  mit Google: keine Werbung, keine Google-Cookies, kein Google-JavaScript.
+
+
+  ## Was die App kann
+
+  - **Videos ohne Werbung** - eigener Player mit HLS bis 4K, Qualitaet,
+  Geschwindigkeit, Untertiteln, Kapiteln und "Meistgesehen"-Kurve.
+
+  - **SponsorBlock und DeArrow** - Sponsoren, Intros und Eigenwerbung
+  ueberspringen; bessere Titel und Vorschaubilder der Community.
+
+  - **Lokale Abos, Playlists und Verlauf** - durchsuchbar, pro Konto. Abos in
+  **Profile** ordnen fuer einen fokussierten Feed.
+
+  - **Import und Export** - FreeTube, NewPipe, Invidious, YouTube-Takeout (CSV)
+  und OPML.
+
+  - **Persoenliche Startseite** - Empfehlungen aus Sehdauer, Likes und Abos,
+  jeweils mit Begruendung; alles lokal auf deinem Geraet berechnet.
+
+  - **Twitch** - Livestreams ohne Werbung, VODs (auch nur fuer Abonnenten),
+  Clips, Kategorien und Live-Chat mit 7TV/BTTV/FFZ-Emotes im selben Player;
+  mitschreiben nach Anmeldung per Code. YouTube- und Twitch-Kanaele derselben Person
+  werden automatisch verknuepft, mit Live-Hinweis.
+
+  - **Watch-Party** - zusammen schauen per Einladungslink, auch fuer Gaeste
+  ohne Konto: synchrone Wiedergabe, Warteschlange und Chat.
+
+  - **Stream-Liste und Stream-Modus** - Videos sammeln und am Stueck
+  abarbeiten, auf Wunsch privat ohne Verlauf.
+
+  - **Trends und Kanal-Beitraege** - Trends nach Region, Community-Beitraege
+  der Kanaele.
+
+  - **Bildschirmfoto, externer Player, Mini-Player, Bild-in-Bild, mehrere
+  Fenster und Tastenkuerzel** (Taste ? zeigt alle).
+
+  - **Familienfreundlich und ablenkungsfrei** - eingeschraenkter Modus,
+  Shorts, Kommentare, Empfehlungen und vieles mehr ausblendbar.
+
+
+  ## Erste Schritte
+
+  Die App oeffnen und das erste Konto anlegen – es wird Admin. Abos ueber die
+  Suche abonnieren oder unter Abos & Profile importieren. Braucht die App
+  nrzGit (laedt das Programm von dort).
+releaseNotes: >-
+  Daumen hoch/runter wird nach dem Bewerten ausgefuellt angezeigt (auch nach Neuladen und im Menue auf Karten). Home-Symbol in der mobilen Leiste markiert die aktive Seite wieder richtig.
+developer: nrz
+website: http://100.78.107.162:8390/nicorenezweers/nrzTube
+submitter: nrz
+submission: http://100.78.107.162:8390/nicorenezweers/nrzStore
+repo: http://100.78.107.162:8390/nicorenezweers/nrzTube
+support: http://100.78.107.162:8390/nicorenezweers/nrzTube/issues
+dependencies:
+  - nrz-git
+defaultUsername: ""
+defaultPassword: ""
+gallery: []

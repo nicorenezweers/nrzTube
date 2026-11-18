@@ -1,0 +1,9 @@
+/target
+/ui/target
+/data
+/dist
+.DS_Store
+*.db
+*.db-*
+/ui/dist
+/ui/assets/tailwind.css

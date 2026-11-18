@@ -1,0 +1,7 @@
+{
+  "store": "nicorenezweers/nrzStore",
+  "app": "nrz-tube",
+  "tagPrefix": "umbrel-",
+  "package": "umbrel",
+  "releaseNotes": "Daumen hoch/runter wird nach dem Bewerten ausgefuellt angezeigt (auch nach Neuladen und im Menue auf Karten). Home-Symbol in der mobilen Leiste markiert die aktive Seite wieder richtig."
+}
