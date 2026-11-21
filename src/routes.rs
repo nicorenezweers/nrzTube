@@ -253,6 +253,7 @@ pub async fn admin_info(State(state): State<AppState>, Admin(_): Admin) -> Json<
         registration_open: state.db.app_setting("registration_open").as_deref() == Some("1"),
         ytdlp_version: state.ytdlp.version.lock().await.clone(),
         youtube_cookies: state.ytdlp.has_cookies().await,
+        social_cookies: state.social.status().into_iter().filter(|s| s.login).map(|s| s.platform).collect(),
     })
 }
 

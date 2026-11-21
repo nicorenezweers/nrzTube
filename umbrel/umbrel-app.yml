@@ -2,8 +2,8 @@ manifestVersion: 1
 id: nrz-tube
 category: media
 name: nrzTube
-version: "1.0.1"
-tagline: YouTube und Twitch ohne Werbung und ohne Tracking – mit Abos, Profilen, SponsorBlock und Live-Chat
+version: "1.1.0"
+tagline: YouTube, Twitch, TikTok, Instagram und X ohne Werbung und ohne Tracking – eine App fuer alles
 icon: http://100.78.107.162:8390/nicorenezweers/nrzStore/raw/branch/main/nrz-tube/icon.png
 port: 8455
 path: ""
@@ -36,6 +36,11 @@ description: >-
   mitschreiben nach Anmeldung per Code. YouTube- und Twitch-Kanaele derselben Person
   werden automatisch verknuepft, mit Live-Hinweis.
 
+  - **Social: TikTok, Instagram und X** - Konten folgen und ihre neuesten
+  Beitraege in einem gemeinsamen Feed sehen, sortiert nach Plattform-Reitern;
+  Profile, Videos und Bilder laufen ueber deinen Server. Instagram-Profile
+  brauchen eine hinterlegte Anmeldung (cookies.txt), X ist damit zuverlaessiger.
+
   - **Watch-Party** - zusammen schauen per Einladungslink, auch fuer Gaeste
   ohne Konto: synchrone Wiedergabe, Warteschlange und Chat.
 
@@ -58,7 +63,7 @@ description: >-
   Suche abonnieren oder unter Abos & Profile importieren. Braucht die App
   nrzGit (laedt das Programm von dort).
 releaseNotes: >-
-  Better README with screenshots and the full feature list. Codebase is now 100% Rust.
+  Neu: Social – TikTok, Instagram und X in nrzTube. Konten folgen, gemischter Feed mit Plattform-Reitern, Profile, Videos ohne Werbung und Tracking; Links zu Beitraegen und Profilen einfach in die Suche einfuegen.
 developer: nrz
 website: http://100.78.107.162:8390/nicorenezweers/nrzTube
 submitter: nrz
@@ -72,3 +77,4 @@ defaultPassword: ""
 gallery:
   - http://100.78.107.162:8390/nicorenezweers/nrzTube/raw/branch/main/docs/screenshots/home.jpg
   - http://100.78.107.162:8390/nicorenezweers/nrzTube/raw/branch/main/docs/screenshots/twitch.jpg
+  - http://100.78.107.162:8390/nicorenezweers/nrzTube/raw/branch/main/docs/screenshots/social.jpg

@@ -19,6 +19,8 @@ mod party;
 mod recap;
 mod ytlive;
 mod canireact;
+mod social;
+mod social_routes;
 
 use axum::body::Body;
 use axum::extract::Request;
@@ -45,6 +47,7 @@ pub struct AppState {
     pub parties: Arc<party::Parties>,
     pub ytlive: Arc<ytlive::YtLive>,
     pub cir: Arc<canireact::CanIReact>,
+    pub social: Arc<social::Social>,
     pub media_http: reqwest::Client,
     #[allow(clippy::type_complexity)]
     pub trending: Arc<Mutex<HashMap<String, (Instant, Vec<nrztube_types::VideoItem>)>>>,
@@ -172,6 +175,7 @@ async fn main() -> anyhow::Result<()> {
         parties: Arc::new(party::Parties::default()),
         ytlive: Arc::new(ytlive::YtLive::default()),
         cir: Arc::new(canireact::CanIReact::default()),
+        social: social::Social::new(ytdlp.clone(), data.clone()),
         yt,
         ytdlp: ytdlp.clone(),
         media_http,
@@ -297,6 +301,13 @@ async fn main() -> anyhow::Result<()> {
         .route("/api/links/youtube/{id}", get(twitch_routes::youtube_links))
         .route("/api/links", post(twitch_routes::add_link))
         .route("/api/links/{yt}/{tw}", delete(twitch_routes::remove_link))
+        .route("/api/social/feed", get(social_routes::feed))
+        .route("/api/social/status", get(social_routes::status))
+        .route("/api/social/profile/{platform}/{handle}", get(social_routes::profile))
+        .route("/api/social/post/{platform}/{id}", get(social_routes::post))
+        .route("/api/social/follows", get(social_routes::follows).post(social_routes::follow))
+        .route("/api/social/follows/{platform}/{handle}", delete(social_routes::unfollow))
+        .route("/api/admin/social-cookies/{platform}", post(social_routes::admin_cookies))
         .route("/api/taste", get(taste).delete(reset_taste))
         .route("/api/prefetch", post(prefetch))
         .route("/api/export/subscriptions", get(export_subscriptions))
@@ -316,6 +327,8 @@ async fn main() -> anyhow::Result<()> {
         .merge(api)
         .merge(images)
         .route("/p/{token}", get(proxy::media_proxy))
+        // Videos aus dem Social-Cache: ohne Komprimierung (Range-Anfragen)
+        .route("/api/social/play/{platform}/{id}", get(social_routes::play))
         .fallback(get(spa).layer(tower_http::compression::CompressionLayer::new()))
         .layer(middleware::from_fn(security_headers))
         .layer(axum::extract::DefaultBodyLimit::max(32 * 1024 * 1024))

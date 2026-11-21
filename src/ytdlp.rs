@@ -79,6 +79,11 @@ impl YtDlp {
         self.refresh_version().await;
     }
 
+    /// Pfad zum yt-dlp-Programm (für andere Plattformen als YouTube)
+    pub async fn bin(&self) -> PathBuf {
+        self.bin.lock().await.clone()
+    }
+
     async fn cookie_file(&self) -> Option<PathBuf> {
         self.cookies.lock().await.clone().filter(|p| p.exists())
     }

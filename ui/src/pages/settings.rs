@@ -15,6 +15,7 @@ const TABS: &[(&str, &str)] = &[
     ("reco", "Empfehlungen"),
     ("stream", "Stream-Modus"),
     ("twitch", "Twitch"),
+    ("social", "Social"),
     ("player", "Player"),
     ("privacy", "Datenschutz & Jugendschutz"),
     ("sponsorblock", "SponsorBlock"),
@@ -63,6 +64,7 @@ pub fn SettingsPage(tab: String) -> Element {
                         "reco" => rsx! { RecoSettings {} },
                         "stream" => rsx! { StreamSettings {} },
                         "twitch" => rsx! { TwitchSettings {} },
+                        "social" => rsx! { SocialSettings {} },
                         "privacy" => rsx! { PrivacySettings {} },
                         "sponsorblock" => rsx! { SponsorBlockSettings {} },
                         "dearrow" => rsx! { DeArrowSettings {} },
@@ -208,6 +210,72 @@ fn StreamSettings() -> Element {
             {toggle!(s, stream_remove_done, "Fertig Geschautes entfernen", Some("Am Ende eines Videos fällt es aus der Stream-Liste, das nächste startet"))}
             SettingRow { title: "Videos aus der Stream-Liste", text: "In Abo-Feed und auf der Startseite".to_string(),
                 Select { value: if s.stream_in_feed == "show" { "show".to_string() } else { "hide".to_string() }, options: o(&[("hide", "Ausblenden"), ("show", "Normal anzeigen")]), onchange: move |v| update_settings(|x| x.stream_in_feed = v) }
+            }
+        }
+    }
+}
+
+#[component]
+fn SocialSettings() -> Element {
+    let s = SETTINGS();
+    let admin = AUTH().and_then(|a| a.me).map(|m| m.admin).unwrap_or(false);
+    rsx! {
+        Section { title: "Social", text: "TikTok, Instagram und X in nrzTube: folge Konten und sieh ihre neuesten Beiträge in einem gemeinsamen Feed – ohne Werbung, ohne Tracking, alles über deinen Server. Links zu Beiträgen und Profilen kannst du einfach in die Suche einfügen.".to_string(),
+            {toggle!(s, social_enabled, "Social anzeigen", Some("Bereich in Seitenleiste und Navigation, Erkennung von Links in der Suche"))}
+            {toggle!(s, social_tiktok, "TikTok", Some("Profile und Videos – funktioniert ohne Anmeldung"))}
+            {toggle!(s, social_instagram, "Instagram", Some("Profile nur mit hinterlegter Anmeldung, einzelne Beiträge auch ohne"))}
+            {toggle!(s, social_x, "X", Some("Profile ohne Anmeldung mit Abruf-Grenzen, einzelne Beiträge immer"))}
+        }
+        if admin { SocialLogins {} }
+    }
+}
+
+/// Anmeldungen (cookies.txt) für TikTok, Instagram und X – nur Admins, gilt für alle Konten
+#[component]
+fn SocialLogins() -> Element {
+    let mut info = use_resource(|| async { api::get::<AdminInfo>("/api/admin").await });
+    let Some(Ok(a)) = info() else { return rsx! { Loading {} } };
+    let rows: [(&str, &str, &str); 3] = [
+        ("instagram", "Instagram-Anmeldung", "Nötig für Instagram-Profile. cookies.txt von instagram.com (Netscape-Format, z. B. Erweiterung „Get cookies.txt LOCALLY“). Am besten ein Zweitkonto."),
+        ("x", "X-Anmeldung", "Optional: Profile laden zuverlässiger, ohne Abruf-Grenzen. cookies.txt von x.com."),
+        ("tiktok", "TikTok-Anmeldung", "Optional: nur für altersbeschränkte oder private Inhalte. cookies.txt von tiktok.com."),
+    ];
+    rsx! {
+        Section { title: "Anmeldungen", text: "Gelten für alle Konten auf diesem Server und werden nur zum Abrufen benutzt.".to_string(),
+            for (p, title, hint) in rows {
+                {
+                    let has = a.social_cookies.iter().any(|x| x == p);
+                    rsx! {
+                        SettingRow { key: "{p}", title: title.to_string(), text: if has { "Hinterlegt".to_string() } else { hint.to_string() },
+                            div { class: "flex shrink-0 gap-2",
+                                label { class: "inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-md border border-input bg-input/30 px-3 text-sm hover:bg-accent",
+                                    icons::Upload { class: "size-4" }
+                                    if has { "Ersetzen" } else { "cookies.txt" }
+                                    input { r#type: "file", class: "hidden", accept: ".txt,text/plain",
+                                        onchange: move |e| {
+                                            let Some(file) = e.files().into_iter().next() else { return };
+                                            spawn(async move {
+                                                match file.read_string().await {
+                                                    Ok(text) => match api::post_text::<serde_json::Value>(&format!("/api/admin/social-cookies/{p}"), text).await {
+                                                        Ok(_) => toast("Anmeldung gespeichert"),
+                                                        Err(e) => toast_err(e),
+                                                    },
+                                                    Err(e) => toast_err(e),
+                                                }
+                                                info.restart();
+                                            });
+                                        }
+                                    }
+                                }
+                                if has {
+                                    Button { variant: ButtonVariant::Ghost, size: ButtonSize::IconSm, title: "Entfernen", onclick: move |_| {
+                                        spawn(async move { let _ = api::post_text::<serde_json::Value>(&format!("/api/admin/social-cookies/{p}"), String::new()).await; info.restart(); toast("Anmeldung entfernt"); });
+                                    }, icons::Trash2 {} }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }

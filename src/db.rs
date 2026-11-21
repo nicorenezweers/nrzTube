@@ -105,6 +105,16 @@ CREATE TABLE IF NOT EXISTS twitch_follows (
   added INTEGER NOT NULL,
   PRIMARY KEY (user_id, login)
 );
+-- Gefolgte Konten auf TikTok, Instagram und X
+CREATE TABLE IF NOT EXISTS social_follows (
+  user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  platform TEXT NOT NULL,
+  handle TEXT NOT NULL,
+  name TEXT NOT NULL DEFAULT '',
+  avatar TEXT NOT NULL DEFAULT '',
+  added INTEGER NOT NULL,
+  PRIMARY KEY (user_id, platform, handle)
+);
 -- YouTube <-> Twitch (für alle Konten gleich; rejected = von Hand gelöst)
 CREATE TABLE IF NOT EXISTS channel_links (
   yt_id TEXT NOT NULL,
@@ -798,6 +808,30 @@ impl Db {
 
     pub fn twitch_unfollow(&self, user: i64, login: &str) -> Result<()> {
         self.c().execute("DELETE FROM twitch_follows WHERE user_id=? AND login=?", params![user, login.to_lowercase()])?;
+        Ok(())
+    }
+
+    // ------------------------------------------------------------ Social
+
+    pub fn social_follows(&self, user: i64) -> Vec<SocialFollow> {
+        let c = self.c();
+        let Ok(mut st) = c.prepare("SELECT platform,handle,name,avatar,added FROM social_follows WHERE user_id=? ORDER BY platform, name COLLATE NOCASE") else { return vec![] };
+        st.query_map([user], |r| Ok(SocialFollow { platform: r.get(0)?, handle: r.get(1)?, name: r.get(2)?, avatar: r.get(3)?, added: r.get(4)? }))
+            .map(|rows| rows.flatten().collect())
+            .unwrap_or_default()
+    }
+
+    pub fn social_follow(&self, user: i64, f: &SocialFollow) -> Result<()> {
+        self.c().execute(
+            "INSERT INTO social_follows(user_id,platform,handle,name,avatar,added) VALUES(?,?,?,?,?,?)
+             ON CONFLICT(user_id,platform,handle) DO UPDATE SET name=excluded.name, avatar=excluded.avatar",
+            params![user, f.platform, f.handle, f.name, f.avatar, now()],
+        )?;
+        Ok(())
+    }
+
+    pub fn social_unfollow(&self, user: i64, platform: &str, handle: &str) -> Result<()> {
+        self.c().execute("DELETE FROM social_follows WHERE user_id=? AND platform=? AND handle=?", params![user, platform, handle])?;
         Ok(())
     }
 

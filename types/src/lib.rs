@@ -442,6 +442,9 @@ pub struct AdminInfo {
     /// YouTube-Anmeldung (cookies.txt) für altersbeschränkte Videos hinterlegt
     #[serde(default)]
     pub youtube_cookies: bool,
+    /// Social-Plattformen mit hinterlegter Anmeldung ("tiktok", "instagram", "x")
+    #[serde(default)]
+    pub social_cookies: Vec<String>,
 }
 
 // ------------------------------------------------------------------ Bibliothek
@@ -653,6 +656,12 @@ pub struct Settings {
     /// Reaktionsrichtlinien von Can I React unter Videos anzeigen
     pub can_i_react: bool,
 
+    // Social (TikTok, Instagram, X)
+    pub social_enabled: bool,
+    pub social_tiktok: bool,
+    pub social_instagram: bool,
+    pub social_x: bool,
+
     // Stream-Modus
     /// Stream-Liste und Stream-Modus überhaupt anbieten (Standard: aus)
     pub stream_enabled: bool,
@@ -762,6 +771,10 @@ impl Default for Settings {
             twitch_live_row: true,
             twitch_hidden_games: Vec::new(),
             can_i_react: true,
+            social_enabled: true,
+            social_tiktok: true,
+            social_instagram: true,
+            social_x: true,
             stream_enabled: false,
             stream_mode: false,
             stream_private: true,
@@ -1299,4 +1312,123 @@ pub struct ReactInfo {
     pub original: Option<VideoItem>,
     #[serde(default)]
     pub reactions: Vec<ReactReaction>,
+}
+
+// ------------------------------------------------------------------ Social (TikTok, Instagram, X)
+
+/// Plattformen im Social-Bereich: "tiktok", "instagram", "x"
+pub const SOCIAL_PLATFORMS: &[&str] = &["tiktok", "instagram", "x"];
+
+/// Bild oder Video eines Beitrags (Adressen laufen über den nrzTube-Server)
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct SocialMedia {
+    /// "image" oder "video"
+    pub kind: String,
+    pub url: String,
+    #[serde(default)]
+    pub thumb: String,
+    #[serde(default)]
+    pub width: u32,
+    #[serde(default)]
+    pub height: u32,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct SocialPost {
+    pub platform: String,
+    pub id: String,
+    /// Handle ohne @
+    pub author: String,
+    #[serde(default)]
+    pub author_name: String,
+    #[serde(default)]
+    pub author_avatar: String,
+    #[serde(default)]
+    pub text: String,
+    #[serde(default)]
+    pub published: i64,
+    #[serde(default)]
+    pub media: Vec<SocialMedia>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub likes: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub comments: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub views: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub reposts: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub duration: Option<f64>,
+    /// Geteilt von (X: Retweet)
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub repost_by: Option<String>,
+    /// Adresse auf der Plattform selbst
+    #[serde(default)]
+    pub url: String,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct SocialProfile {
+    pub platform: String,
+    pub handle: String,
+    #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub avatar: String,
+    #[serde(default)]
+    pub bio: String,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub followers: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub following: Option<u64>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub post_count: Option<u64>,
+    #[serde(default)]
+    pub verified: bool,
+    #[serde(default)]
+    pub posts: Vec<SocialPost>,
+    #[serde(default)]
+    pub url: String,
+}
+
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct SocialFollow {
+    pub platform: String,
+    pub handle: String,
+    #[serde(default)]
+    pub name: String,
+    #[serde(default)]
+    pub avatar: String,
+    #[serde(default)]
+    pub added: i64,
+}
+
+/// Gemischter Feed der gefolgten Konten; Fehler einzelner Konten stehen daneben
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct SocialFeed {
+    pub posts: Vec<SocialPost>,
+    #[serde(default)]
+    pub errors: Vec<String>,
+}
+
+/// Pro Plattform: ist eine Anmeldung (cookies.txt) hinterlegt, braucht sie eine?
+#[derive(Clone, Debug, Default, PartialEq, Serialize, Deserialize)]
+pub struct SocialStatus {
+    pub platform: String,
+    pub login: bool,
+    /// Ohne Anmeldung gehen Profile nicht (Instagram) oder nur eingeschränkt (X)
+    pub needs_login: bool,
+}
+
+impl Settings {
+    /// Plattform im Social-Bereich eingeschaltet?
+    pub fn social_on(&self, platform: &str) -> bool {
+        self.social_enabled
+            && match platform {
+                "tiktok" => self.social_tiktok,
+                "instagram" => self.social_instagram,
+                "x" => self.social_x,
+                _ => false,
+            }
+    }
 }

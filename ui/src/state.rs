@@ -12,6 +12,8 @@ pub static SUBS: GlobalSignal<Vec<Subscription>> = Signal::global(Vec::new);
 pub static ACCOUNTS: GlobalSignal<AccountsInfo> = Signal::global(AccountsInfo::default);
 /// Gefolgte Twitch-Kanäle
 pub static TW_FOLLOWS: GlobalSignal<Vec<TwitchFollow>> = Signal::global(Vec::new);
+/// Gefolgte Konten auf TikTok, Instagram und X
+pub static SOCIAL_FOLLOWS: GlobalSignal<Vec<SocialFollow>> = Signal::global(Vec::new);
 /// Wer gerade auf Twitch live ist (gefolgt oder mit abonniertem YouTube-Kanal verknüpft)
 pub static TW_LIVE: GlobalSignal<Vec<VideoItem>> = Signal::global(Vec::new);
 /// Livestreams der eigenen YouTube-Abos
@@ -114,6 +116,37 @@ pub async fn load_user_data() {
     reload_tw_follows().await;
     reload_tw_live().await;
     reload_accounts().await;
+    reload_social_follows().await;
+}
+
+pub async fn reload_social_follows() {
+    if let Ok(f) = api::get::<Vec<SocialFollow>>("/api/social/follows").await {
+        *SOCIAL_FOLLOWS.write() = f;
+    }
+}
+
+pub fn is_social_following(platform: &str, handle: &str) -> bool {
+    SOCIAL_FOLLOWS.read().iter().any(|f| f.platform == platform && f.handle == handle)
+}
+
+/// Konto auf TikTok, Instagram oder X folgen oder entfolgen
+pub fn toggle_social_follow(platform: String, handle: String, name: String, avatar: String) {
+    let on = !is_social_following(&platform, &handle);
+    spawn(async move {
+        let r = if on {
+            api::post::<_, serde_json::Value>("/api/social/follows", &SocialFollow { platform: platform.clone(), handle: handle.clone(), name: name.clone(), avatar, added: 0 }).await
+        } else {
+            api::delete::<serde_json::Value>(&format!("/api/social/follows/{platform}/{handle}")).await
+        };
+        let label = if name.is_empty() { format!("@{handle}") } else { name };
+        match r {
+            Ok(_) => {
+                reload_social_follows().await;
+                toast(if on { format!("Du folgst {label}") } else { format!("{label} entfolgt") });
+            }
+            Err(e) => toast_err(e),
+        }
+    });
 }
 
 pub async fn reload_accounts() {

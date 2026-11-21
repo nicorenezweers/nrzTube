@@ -53,6 +53,17 @@ const IMG_HOSTS: &[&str] = &[
     "cdn.frankerfacez.com",
 ];
 
+/// Bild-Server von TikTok, Instagram und X (wechselnde Unterdomains)
+fn social_img_host(h: &str) -> bool {
+    h == "pbs.twimg.com"
+        || h.ends_with(".cdninstagram.com")
+        || h.ends_with(".fbcdn.net")
+        || h.ends_with(".tiktokcdn.com")
+        || h.ends_with(".tiktokcdn-eu.com")
+        || h.ends_with(".tiktokcdn-us.com")
+        || h.ends_with(".ibyteimg.com")
+}
+
 fn host_of(u: &str) -> Option<&str> {
     let rest = u.strip_prefix("https://").or_else(|| u.strip_prefix("http://"))?;
     Some(rest.split(['/', '?', ':']).next().unwrap_or(""))
@@ -67,6 +78,9 @@ fn media_host_ok(u: &str) -> bool {
                 || h.ends_with(".twitchcdn.net")
                 || h.ends_with(".twitch.tv")
                 || h.ends_with(".jtvnw.net")
+                || h == "video.twimg.com"
+                || h.ends_with(".cdninstagram.com")
+                || h.ends_with(".fbcdn.net")
                 || h == "www.youtube.com" && u.contains("/api/timedtext")
                 || h.ends_with(".youtube.com") && u.contains("/api/timedtext")
         }
@@ -153,7 +167,7 @@ pub async fn image(State(state): State<AppState>, Path(token): Path<String>) -> 
         return StatusCode::BAD_REQUEST.into_response();
     };
     match host_of(&url) {
-        Some(h) if IMG_HOSTS.contains(&h) => fetch_image(&state, &url).await,
+        Some(h) if IMG_HOSTS.contains(&h) || social_img_host(h) => fetch_image(&state, &url).await,
         _ => StatusCode::FORBIDDEN.into_response(),
     }
 }

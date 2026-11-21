@@ -100,6 +100,10 @@ fn Header() -> Element {
             nav.push(r);
             return;
         }
+        if let Some(r) = crate::pages::social::social_route(&text) {
+            nav.push(r);
+            return;
+        }
         if lower.contains("youtube.com/") || lower.contains("youtu.be/") || text.starts_with('@') {
             spawn(async move {
                 if let Ok(r) = api::get::<serde_json::Value>(&format!("/api/resolve?q={}", api::enc(&text))).await {
@@ -287,6 +291,9 @@ fn Sidebar() -> Element {
                     }
                 }
             }
+            if s.social_enabled && !s.stream_mode {
+                SocialNav {}
+            }
             div { class: "mx-3 my-1.5 border-t" }
             if s.stream_enabled {
             Link { to: Route::StreamPage {},
@@ -386,6 +393,49 @@ fn Sidebar() -> Element {
     }
 }
 
+/// Seitenleiste: Social-Bereich mit einem Eintrag pro Plattform
+#[component]
+fn SocialNav() -> Element {
+    use crate::pages::social::{enabled_platforms, platform_name, PlatformGlyph};
+    let route = use_route::<Route>();
+    let collapsed = SIDEBAR();
+    let platforms = enabled_platforms();
+    if platforms.is_empty() {
+        return rsx! {};
+    }
+    // Aktive Plattform: Reiter, Profil oder Beitrag
+    let active: Option<String> = match &route {
+        Route::SocialHome { p } => Some(p.clone()),
+        Route::SocialProfilePage { platform, .. } | Route::SocialPostPage { platform, .. } => Some(platform.clone()),
+        _ => None,
+    };
+    let cls = |on: bool| if on { "flex items-center gap-3 rounded-lg bg-sidenav-accent px-3 py-2 text-sm font-medium" } else { "flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-muted-foreground hover:bg-sidenav-accent/60 hover:text-foreground" };
+    let count = |p: &str| SOCIAL_FOLLOWS().iter().filter(|f| p.is_empty() || f.platform == p).count();
+    rsx! {
+        if !collapsed {
+            div { class: "mt-2 px-3 pb-0.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground/80", "Social" }
+        } else {
+            div { class: "mx-3 my-1.5 border-t" }
+        }
+        Link { to: Route::SocialHome { p: String::new() }, class: cls(active.as_deref() == Some("")), title: "Social-Feed",
+            icons::Sparkles { class: "size-4 shrink-0" }
+            if !collapsed {
+                span { class: "truncate", "Social-Feed" }
+                if count("") > 0 { span { class: "ml-auto text-[11px] text-muted-foreground tabular-nums", "{count(\"\")}" } }
+            }
+        }
+        for p in platforms {
+            Link { key: "{p}", to: Route::SocialHome { p: p.to_string() }, class: cls(active.as_deref() == Some(p)), title: "{platform_name(p)}",
+                PlatformGlyph { platform: p.to_string(), class: "size-4 shrink-0" }
+                if !collapsed {
+                    span { class: "truncate", "{platform_name(p)}" }
+                    if count(p) > 0 { span { class: "ml-auto text-[11px] text-muted-foreground tabular-nums", "{count(p)}" } }
+                }
+            }
+        }
+    }
+}
+
 #[component]
 fn BottomNav() -> Element {
     let route = use_route::<Route>();
@@ -408,6 +458,12 @@ fn BottomNav() -> Element {
                         if !TW_LIVE().is_empty() { span { class: "absolute -right-1 -top-0.5 size-2 rounded-full bg-red-500" } }
                     }
                     "Twitch"
+                }
+            }
+            if s.social_enabled && !s.stream_mode && !crate::pages::social::enabled_platforms().is_empty() {
+                Link { to: Route::SocialHome { p: String::new() }, class: item(matches!(route, Route::SocialHome { .. } | Route::SocialProfilePage { .. } | Route::SocialPostPage { .. })),
+                    icons::Sparkles { class: "size-[22px]" }
+                    "Social"
                 }
             }
             if s.stream_enabled {

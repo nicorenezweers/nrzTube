@@ -16,3 +16,4 @@ pub mod twitch;
 pub mod party;
 pub mod recap;
 pub mod react_info;
+pub mod social;

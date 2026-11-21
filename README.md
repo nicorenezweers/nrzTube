@@ -2,10 +2,10 @@
 
 # ▶ nrzTube
 
-**YouTube and Twitch without ads or tracking – with your own subscriptions, recommendations, watch parties and live chat.**
+**YouTube, Twitch, TikTok, Instagram and X without ads or tracking – one app for everything, with your own subscriptions, recommendations, watch parties and live chat.**
 
 A private, self-hosted frontend written in Rust, inspired by [Invidious](https://github.com/iv-org/invidious) and FreeTube.
-The server fetches everything itself – your browser never talks to Google or Twitch.
+The server fetches everything itself – your browser never talks to Google, Twitch, TikTok, Instagram or X.
 
 ![Rust](https://img.shields.io/badge/Rust-100%25-dea584?logo=rust&logoColor=white)
 ![axum](https://img.shields.io/badge/server-axum-6b4fbb)
@@ -14,8 +14,8 @@ The server fetches everything itself – your browser never talks to Google or T
 ![umbrelOS](https://img.shields.io/badge/umbrelOS-nrzStore-5351fb)
 ![License](https://img.shields.io/badge/license-AGPL--3.0-blue)
 
-**Deutsch** — Privates YouTube- und Twitch-Frontend in Rust, ohne Werbung und ohne Tracking.<br>
-**Español** — Frontend privado de YouTube y Twitch escrito en Rust, sin anuncios ni rastreo.
+**Deutsch** — Privates Frontend für YouTube, Twitch, TikTok, Instagram und X in Rust, ohne Werbung und ohne Tracking.<br>
+**Español** — Frontend privado de YouTube, Twitch, TikTok, Instagram y X escrito en Rust, sin anuncios ni rastreo.
 
 </div>
 
@@ -26,6 +26,10 @@ The server fetches everything itself – your browser never talks to Google or T
 ![Twitch: live from your channels, followed, categories and most watched](docs/screenshots/twitch.jpg)
 
 <p align="center"><sub>Twitch – live from your channels, followed streamers, categories and the most watched streams, ad-free</sub></p>
+
+![Social: TikTok, Instagram and X in one feed](docs/screenshots/social.jpg)
+
+<p align="center"><sub>Social – TikTok, Instagram and X in one feed, with tabs per platform and the accounts you follow</sub></p>
 
 ---
 
@@ -68,6 +72,19 @@ The server fetches everything itself – your browser never talks to Google or T
 - Follows, history and recommendations; hide channels and categories (like unwanted-twitch)
 - **YouTube and Twitch channels of the same creator** are linked automatically – with a live badge in your subscriptions
 
+### ✨ Social: TikTok, Instagram & X
+- **One mixed feed** of every account you follow, with tabs **All · TikTok · Instagram · X** – also as separate entries in the sidebar
+- **Profiles**: TikTok and Instagram as a grid, X as a timeline; follow/unfollow with one click
+- **Videos and images through your server** – TikTok videos are fetched once with yt-dlp and played from a local cache (12 h)
+- **Paste any link** into the search: TikTok videos/profiles, Instagram posts/reels/profiles, X posts/profiles open directly
+- **Logins (optional)**: admins can store a cookies.txt per platform under Settings → Social – required for Instagram profiles, makes X timelines reliable
+
+| Platform | Without login | With login (cookies.txt) |
+|---|---|---|
+| TikTok | profiles, videos | age-restricted content |
+| Instagram | single posts (links) | profiles and feed |
+| X | single posts, profiles (rate-limited) | profiles without limits |
+
 ### 💬 Live chat
 - Twitch and YouTube Live: **read without an account**, write after signing in (Twitch via code, YouTube via cookies.txt)
 - Emotes from **7TV, BTTV and FrankerFaceZ**
@@ -89,7 +106,7 @@ The server fetches everything itself – your browser never talks to Google or T
 - **External player**: VLC, IINA, Infuse, M3U or copy the URL
 - **Screenshot** with `S` or the camera icon (PNG/JPEG)
 - **Keyboard shortcuts** – `?` shows them all (K/Space, J/L, F, M, T, S, I, C, P, `,`/`.`, arrow keys …)
-- **Search or paste a link** – YouTube and Twitch links open directly (`/` focuses the search)
+- **Search or paste a link** – YouTube, Twitch, TikTok, Instagram and X links open directly (`/` focuses the search)
 
 ### 🛡️ Privacy & family
 - **No ads, no tracking** – no Google cookies, no Google JavaScript; thumbnails, videos and subtitles go through a signed proxy
@@ -100,7 +117,7 @@ The server fetches everything itself – your browser never talks to Google or T
 ## How it works
 
 ```
-Browser ──▶ nrzTube (axum) ──▶ YouTube InnerTube · yt-dlp · Twitch GQL/HLS
+Browser ──▶ nrzTube (axum) ──▶ YouTube InnerTube · yt-dlp · Twitch GQL/HLS · TikTok · Instagram · X
    ▲              │                SponsorBlock · DeArrow · canireact.com
    │              ▼
    └──── signed proxy (thumbnails, videos, subtitles)        SQLite (accounts, subscriptions, history)
@@ -142,7 +159,7 @@ cargo run --release           # server on http://localhost:8455
 ```
 
 ```
-src/        server: routes, InnerTube (yt/), Twitch, live chat, watch party, recap, recommendations
+src/        server: routes, InnerTube (yt/), Twitch, Social (TikTok/Instagram/X), live chat, watch party, recap, recommendations
 ui/         UI (Dioxus): pages, player, components
 types/      types shared by server and UI
 build/      Dockerfile, UI and release scripts

@@ -25,6 +25,7 @@ use pages::subscriptions::Subscriptions;
 use pages::trending::Trending;
 use pages::party::{PartyPage, PartyStart};
 use pages::twitch::{TwitchChannelPage, TwitchHome};
+use pages::social::{SocialHome, SocialPostPage, SocialProfilePage};
 use pages::watch::Watch;
 
 static CSS: Asset = asset!("/assets/tailwind.css");
@@ -54,6 +55,12 @@ pub enum Route {
         TwitchHome { game: String },
         #[route("/twitch/:login?:tab")]
         TwitchChannelPage { login: String, tab: String },
+        #[route("/social?:p")]
+        SocialHome { p: String },
+        #[route("/social/:platform/p/:id?:h")]
+        SocialPostPage { platform: String, id: String, h: String },
+        #[route("/social/:platform/:handle")]
+        SocialProfilePage { platform: String, handle: String },
         #[route("/party")]
         PartyStart {},
         #[route("/playlist?:list")]
