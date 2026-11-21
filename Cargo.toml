@@ -1,6 +1,6 @@
 [package]
 name = "nrztube"
-version = "1.1.0"
+version = "1.1.1"
 edition = "2021"
 description = "nrzTube – privates YouTube-, Twitch-, TikTok-, Instagram- und X-Frontend in Rust (axum, SQLite, Dioxus/nrzUI), ohne Werbung und ohne Google-Tracking"
 license = "AGPL-3.0-or-later"
