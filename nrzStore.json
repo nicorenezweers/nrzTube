@@ -3,5 +3,5 @@
   "app": "nrz-tube",
   "tagPrefix": "umbrel-",
   "package": "umbrel",
-  "releaseNotes": "Fixes the 1.1.0 update still loading the old program. New: Social – TikTok, Instagram and X inside nrzTube. Follow accounts, one mixed feed with platform tabs, profiles and videos without ads or tracking; paste post or profile links into the search."
+  "releaseNotes": "Security updates (nrzSecurity): rusqlite 0.41 (SQLite / libsqlite3-sys 0.39), url 2.5.9, cookie 0.18.3."
 }

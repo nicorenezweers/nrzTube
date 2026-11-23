@@ -2,7 +2,7 @@ manifestVersion: 1
 id: nrz-tube
 category: media
 name: nrzTube
-version: "1.1.1"
+version: "1.2.0"
 tagline: YouTube, Twitch, TikTok, Instagram und X ohne Werbung und ohne Tracking – eine App fuer alles
 icon: http://100.78.107.162:8390/nicorenezweers/nrzStore/raw/branch/main/nrz-tube/icon.png
 port: 8455
@@ -63,7 +63,7 @@ description: >-
   Suche abonnieren oder unter Abos & Profile importieren. Braucht die App
   nrzGit (laedt das Programm von dort).
 releaseNotes: >-
-  Behebt, dass das Update auf 1.1.0 noch das alte Programm geladen hat. Neu: Social – TikTok, Instagram und X in nrzTube. Konten folgen, gemischter Feed mit Plattform-Reitern, Profile, Videos ohne Werbung und Tracking; Links zu Beitraegen und Profilen einfach in die Suche einfuegen.
+  Sicherheits-Updates (nrzSecurity): rusqlite 0.41 (SQLite/libsqlite3-sys 0.39), url 2.5.9, cookie 0.18.3.
 developer: nrz
 website: http://100.78.107.162:8390/nicorenezweers/nrzTube
 submitter: nrz

@@ -1,6 +1,6 @@
 [package]
 name = "nrztube"
-version = "1.1.1"
+version = "1.2.0"
 edition = "2021"
 description = "nrzTube – privates YouTube-, Twitch-, TikTok-, Instagram- und X-Frontend in Rust (axum, SQLite, Dioxus/nrzUI), ohne Werbung und ohne Google-Tracking"
 license = "AGPL-3.0-or-later"
@@ -17,7 +17,7 @@ axum = { version = "0.8", features = ["macros"] }
 tower-http = { version = "0.6", features = ["compression-gzip", "compression-br"] }
 tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "sync", "time", "process", "net", "signal"] }
 reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "json", "stream", "gzip", "brotli"] }
-rusqlite = { version = "0.37", features = ["bundled"] }
+rusqlite = { version = "0.41", features = ["bundled"] }
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 futures = "0.3"
